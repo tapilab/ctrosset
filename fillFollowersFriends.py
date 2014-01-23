@@ -1,7 +1,9 @@
-from twython import Twython
+from twython import Twython, TwythonError, TwythonAuthError, TwythonRateLimitError
 import sqlite3 as lite
 import sys
 
+APP_KEY = '9frssTeB76DtFPRc4TdFw'
+APP_SECRET = '4FMwg6P1s8oPKwYFjCu73bo212vIjHP8BOBxWzLbc'
 
 APP_KEY = 'ORjeiD5wdaUT30yo8r8WTg'
 APP_SECRET = '1QVwIagGofI3r597nExmir61Y0wP9mbG8Z9ko6ILb0'
@@ -27,12 +29,21 @@ with con:
 		
 		numberOfRows = cur2.fetchone()[0]
 		if(numberOfRows==0):
-			print row["idFollower"]
-			friends = twitter.get_friends_ids(user_id = row["idFollower"])
-			for friends_id in friends['ids']:
-				with con:
-					cur3 = con.cursor()
-					cur3.execute("INSERT INTO Users VALUES('" + str(row["idFollower"]) + "','" + str(friends_id) + "')")
-					
+			try:
+				friends = twitter.get_friends_ids(user_id = row["idFollower"])
+			except TwythonAuthError:
+				cur4 = con.cursor()
+				cur4.execute("DELETE FROM Users WHERE idUser="+str(row["idFollower"]))
+				cur4.execute("DELETE FROM Profiles WHERE idFollower="+str(row["idFollower"]))
+			except TwythonRateLimitError:
+				print 'Limit excedeed'
+				sys.exit()
+
+			if 'friends' in locals():
+				for friends_id in friends['ids']:
+					with con:
+						cur3 = con.cursor()
+						cur3.execute("INSERT INTO Users VALUES('" + str(row["idFollower"]) + "','" + str(friends_id) + "')")
+							
 	
 con.close()
