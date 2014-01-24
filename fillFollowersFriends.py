@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from twython import Twython, TwythonError, TwythonAuthError, TwythonRateLimitError
 import sqlite3 as lite
 import sys
