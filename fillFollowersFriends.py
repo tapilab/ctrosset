@@ -14,6 +14,9 @@ APP_SECRET[1] = '1QVwIagGofI3r597nExmir61Y0wP9mbG8Z9ko6ILb0'
 APP_KEY[2] = 'fY2pbaHjDvuTQCw907QuA'
 APP_SECRET[2] = '7dcB7yjGK76KVJOBAdCJJYRbk5ZdW2ufO4isgByw'
 
+APP_KEY[3] = 'ehStwg5ZzdSrYHR2m0bw'
+APP_SECRET[3] = 'iAXRVcfLvUiHTElQRE7iBlpp4sUvs9QhUPmleg6QIVU'
+
 print "Connection ..."
 twitter = Twython(APP_KEY[0], APP_SECRET[0], oauth_version=2)
 ACCESS_TOKEN = twitter.obtain_access_token()
