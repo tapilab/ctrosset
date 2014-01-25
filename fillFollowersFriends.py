@@ -38,16 +38,21 @@ with con:
 	
 	currentAccount = 0
 	
-	iRow = 1;
+	iRow = 1
+	treated = 0
 	
 	for row in rows:
 		cur2 = con.cursor()
 		cur2.execute("SELECT Count(*) FROM Users WHERE idUser=" + str(row["idFollower"]))
 		
+		if(treated>=0):
+			treated+=1
+		
 		numberOfRows = cur2.fetchone()[0]
 		if(numberOfRows==0):
-			if(iRow==1):
-				print 'OK'
+			if(iRow==1 and treated>=0):
+				print 'OK, ' + str(treated) + ' rows already treated'
+				treated = -1
 			try:
 				error = False
 				friends = twitter.get_friends_ids(user_id = row["idFollower"])
