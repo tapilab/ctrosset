@@ -46,6 +46,7 @@ with con:
 		
 		numberOfRows = cur2.fetchone()[0]
 		if(numberOfRows==0):
+			print row["idFollower"];
 			if(iRow==1):
 				print 'OK'
 			try:
