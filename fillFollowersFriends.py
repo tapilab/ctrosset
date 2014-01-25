@@ -28,7 +28,7 @@ twitter = Twython(APP_KEY[0], access_token=ACCESS_TOKEN)
 print "OK"
 print "Looking for the first row not treated ..."
 
-con = lite.connect('database.sqlite')
+con = lite.connect('/var/www/twitter/ctrosset/database.sqlite')
 with con:
 	con.row_factory = lite.Row
 	cur = con.cursor()
