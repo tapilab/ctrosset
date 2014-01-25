@@ -4,6 +4,9 @@ from twython import Twython, TwythonError, TwythonAuthError, TwythonRateLimitErr
 import sqlite3 as lite
 import sys
 
+FILE = '/var/www/twitter/ctrosset/treated'
+DATABASE = '/var/www/twitter/ctrosset/database.sqlite'
+
 APP_KEY = {}
 APP_SECRET = {}
 
@@ -28,18 +31,23 @@ twitter = Twython(APP_KEY[0], access_token=ACCESS_TOKEN)
 print "OK"
 print "Looking for the first row not treated ..."
 
-con = lite.connect('/var/www/twitter/ctrosset/database.sqlite')
+con = lite.connect(DATABASE)
 with con:
 	con.row_factory = lite.Row
-	cur = con.cursor()
 	
-	cur.execute("SELECT * FROM Profiles")
+	file = open(FILE, 'r')
+	treatedInFile = file.read()
+	file.close()
+	
+	cur = con.cursor()
+	cur.execute("SELECT * FROM Profiles LIMIT "+treatedInFile+",200")
 	rows = cur.fetchall()
 	
 	currentAccount = 0
 	
 	iRow = 1
-	treated = 0
+	treated = int(treatedInFile)
+	treatedSave = 0
 	
 	for row in rows:
 		cur2 = con.cursor()
@@ -52,6 +60,7 @@ with con:
 		if(numberOfRows==0):
 			if(iRow==1 and treated>=0):
 				print 'OK, ' + str(treated) + ' rows already treated'
+				treatedSave = treated
 				treated = -1
 			try:
 				error = False
@@ -65,7 +74,12 @@ with con:
 				error = True
 				currentAccount+=1
 				if currentAccount == len(APP_KEY):
-					print 'Limit excedeed and all accounts have been used, quitting ...'
+					print 'Limit excedeed and all accounts have been used, quitting ...'			
+					
+					file = open(FILE,'w')
+					print str(treatedSave+iRow)
+					file.write(str(treatedSave+iRow-5))
+					file.close()
 					sys.exit()
 				else:
 					print 'Switching account ...'
@@ -74,7 +88,10 @@ with con:
 					twitter = Twython(APP_KEY[currentAccount], access_token=ACCESS_TOKEN)
 					print 'OK'
 			except TwythonError as (e):
-				print "Error with id : " + str(row["idFollower"])
+				error = True
+				cur4 = con.cursor()
+				cur4.execute("DELETE FROM Users WHERE idUser="+str(row["idFollower"]))
+				cur4.execute("DELETE FROM Profiles WHERE idFollower="+str(row["idFollower"]))
 
 			if 'friends' in locals():
 				for friends_id in friends['ids']:
@@ -85,5 +102,5 @@ with con:
 			if(error==False):				
 				iRow+=1
 				print "Row " + str(iRow) + " treated"
-	
+				
 con.close()
