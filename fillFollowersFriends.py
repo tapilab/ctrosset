@@ -46,7 +46,6 @@ with con:
 		
 		numberOfRows = cur2.fetchone()[0]
 		if(numberOfRows==0):
-			print row["idFollower"];
 			if(iRow==1):
 				print 'OK'
 			try:
@@ -69,6 +68,8 @@ with con:
 					ACCESS_TOKEN = twitter.obtain_access_token()
 					twitter = Twython(APP_KEY[currentAccount], access_token=ACCESS_TOKEN)
 					print 'OK'
+			except TwythonError as (e):
+				print "Error with id : " + str(row["idFollower"])
 
 			if 'friends' in locals():
 				for friends_id in friends['ids']:
