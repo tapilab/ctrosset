@@ -40,8 +40,8 @@ with con:
 	file.close()
 	
 	cur = con.cursor()
-#	cur.execute("SELECT * FROM Profiles LIMIT "+treatedInFile+",200")
-	cur.execute("SELECT * FROM Profiles")
+	cur.execute("SELECT * FROM Profiles LIMIT "+treatedInFile+",200")
+# 	cur.execute("SELECT * FROM Profiles")
 	rows = cur.fetchall()
 	
 	currentAccount = 0
