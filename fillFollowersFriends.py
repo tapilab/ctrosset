@@ -22,7 +22,18 @@ APP_SECRET[2] = '7dcB7yjGK76KVJOBAdCJJYRbk5ZdW2ufO4isgByw'
 APP_KEY[3] = 'ehStwg5ZzdSrYHR2m0bw'
 APP_SECRET[3] = 'iAXRVcfLvUiHTElQRE7iBlpp4sUvs9QhUPmleg6QIVU'
 
-print "Connection ..."
+APP_KEY[4] = 'JTaP8D2zuPGfUy8jXrzw'
+APP_SECRET[4] = 'h12bgwg0sgHuh9IOAk5t1yktR6nN9E7YKJfEEEpGw'
+
+APP_KEY[5] = 'kIfi33q3LhPs2E3w68iUA'
+APP_SECRET[5] = 'Vj1KcoRMgskuXu35ZrOkXTiQFV5lsfcCgFGEBJbKU'
+
+APP_KEY[6] = 'Q8ybCBKUy8iQMZukGQyKYA'
+APP_SECRET[6] = 'UQTG7O5T2XXvuMAJeVjWwN3EuhBeBY8SgUbyPQ2fiQ'
+
+
+
+print "Connecting ..."
 twitter = Twython(APP_KEY[0], APP_SECRET[0], oauth_version=2)
 ACCESS_TOKEN = twitter.obtain_access_token()
 
@@ -40,8 +51,8 @@ with con:
 	file.close()
 	
 	cur = con.cursor()
-	cur.execute("SELECT * FROM Profiles LIMIT "+treatedInFile+",200")
-# 	cur.execute("SELECT * FROM Profiles")
+#	cur.execute("SELECT * FROM Profiles LIMIT "+treatedInFile+",200")
+ 	cur.execute("SELECT * FROM Profiles")
 	rows = cur.fetchall()
 	
 	currentAccount = 0
