@@ -3,25 +3,35 @@ import sqlite3 as lite
 import sys
 
 
-APP_KEY = 'ehStwg5ZzdSrYHR2m0bw'
-APP_SECRET = 'iAXRVcfLvUiHTElQRE7iBlpp4sUvs9QhUPmleg6QIVU'
+FILE = ''
+DATABASE = ''
+
+APP_KEY = {}
+APP_SECRET = {}
+
+foobar = open( "foobar.config", "r" )
+
+i=0
+for line in foobar
+    line.rstrip('\n')
+    line.rstrip()
+    elif i==0:
+        FILE = line
+    elif i==1
+        DATABASE = line
+    elif i==2:
+        APP_KEY = line.split(',')
+    elif i==3
+        APP_SECRET = line.split(',')
+    i++
 
 
-APP_KEY = 'ORjeiD5wdaUT30yo8r8WTg'
-APP_SECRET = '1QVwIagGofI3r597nExmir61Y0wP9mbG8Z9ko6ILb0'
 
-APP_KEY = '9frssTeB76DtFPRc4TdFw'
-APP_SECRET = '4FMwg6P1s8oPKwYFjCu73bo212vIjHP8BOBxWzLbc'
-
-APP_KEY = 'fY2pbaHjDvuTQCw907QuA'
-APP_SECRET = '7dcB7yjGK76KVJOBAdCJJYRbk5ZdW2ufO4isgByw'
-
-
-twitter = Twython(APP_KEY, APP_SECRET, oauth_version=2)
+twitter = Twython(APP_KEY[0], APP_SECRET[0], oauth_version=2)
 ACCESS_TOKEN = twitter.obtain_access_token()
 
 
-twitter = Twython(APP_KEY, access_token=ACCESS_TOKEN)
+twitter = Twython(APP_KEY[0], access_token=ACCESS_TOKEN)
 
 ins = open( "ToFetch.txt", "r" )
 
@@ -42,7 +52,7 @@ for line in ins:
 		print 'stopped at : ' + USER_NAME;
 		sys.exit()
 		
-	con = lite.connect('database.sqlite')
+	con = lite.connect(DATABASE)
 
 	for follower_id in followers['ids']:
 		with con:
