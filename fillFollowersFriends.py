@@ -4,34 +4,27 @@ from twython import Twython, TwythonError, TwythonAuthError, TwythonRateLimitErr
 import sqlite3 as lite
 import sys
 
-FILE = '/var/www/twitter/ctrosset/treated'
-DATABASE = '/var/www/twitter/ctrosset/database.sqlite'
+FILE = ''
+DATABASE = ''
 
 APP_KEY = {}
 APP_SECRET = {}
 
-APP_KEY[0] = '9frssTeB76DtFPRc4TdFw'
-APP_SECRET[0] = '4FMwg6P1s8oPKwYFjCu73bo212vIjHP8BOBxWzLbc'
+foobar = open( "foobar.config", "r" )
 
-APP_KEY[1] = 'ORjeiD5wdaUT30yo8r8WTg'
-APP_SECRET[1] = '1QVwIagGofI3r597nExmir61Y0wP9mbG8Z9ko6ILb0'
-
-APP_KEY[2] = 'fY2pbaHjDvuTQCw907QuA'
-APP_SECRET[2] = '7dcB7yjGK76KVJOBAdCJJYRbk5ZdW2ufO4isgByw'
-
-APP_KEY[3] = 'ehStwg5ZzdSrYHR2m0bw'
-APP_SECRET[3] = 'iAXRVcfLvUiHTElQRE7iBlpp4sUvs9QhUPmleg6QIVU'
-
-APP_KEY[4] = 'JTaP8D2zuPGfUy8jXrzw'
-APP_SECRET[4] = 'h12bgwg0sgHuh9IOAk5t1yktR6nN9E7YKJfEEEpGw'
-
-APP_KEY[5] = 'kIfi33q3LhPs2E3w68iUA'
-APP_SECRET[5] = 'Vj1KcoRMgskuXu35ZrOkXTiQFV5lsfcCgFGEBJbKU'
-
-APP_KEY[6] = 'Q8ybCBKUy8iQMZukGQyKYA'
-APP_SECRET[6] = 'UQTG7O5T2XXvuMAJeVjWwN3EuhBeBY8SgUbyPQ2fiQ'
-
-
+i=0
+for line in foobar
+    line.rstrip('\n')
+    line.rstrip()
+    elif i==0:
+        FILE = line
+    elif i==1
+        DATABASE = line
+    elif i==2:
+        APP_KEY = line.split(',')
+    elif i==3
+        APP_SECRET = line.split(',')
+    i++
 
 print "Connecting ..."
 twitter = Twython(APP_KEY[0], APP_SECRET[0], oauth_version=2)
