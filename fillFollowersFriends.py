@@ -13,18 +13,17 @@ APP_SECRET = {}
 foobar = open( "foobar.config", "r" )
 
 i=0
-for line in foobar
-    line.rstrip('\n')
-    line.rstrip()
-    elif i==0:
+for line in foobar:
+    line=line.rstrip('\n')
+    if i==0:
         FILE = line
-    elif i==1
+    elif i==1:
         DATABASE = line
     elif i==2:
         APP_KEY = line.split(',')
-    elif i==3
+    elif i==3:
         APP_SECRET = line.split(',')
-    i++
+    i+=1
 
 print "Connecting ..."
 twitter = Twython(APP_KEY[0], APP_SECRET[0], oauth_version=2)
