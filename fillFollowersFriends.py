@@ -24,6 +24,8 @@ for line in foobar:
     elif i==3:
         APP_SECRET = line.split(',')
     i+=1
+    
+foobar.close()
 
 print "Connecting ..."
 twitter = Twython(APP_KEY[0], APP_SECRET[0], oauth_version=2)
