@@ -58,5 +58,4 @@ for line in ins:
 			cur = con.cursor()
 			cur.execute("INSERT INTO Profiles VALUES('" + user['id_str'] + "','" + str(follower_id) + "')")
 
- 
 con.close()
