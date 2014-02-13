@@ -21,19 +21,34 @@ for line in foobar:
     
 foobar.close()
 
-idProfile = 205671915
+def arrayForProfile(idProfile):
+    "Build the array from a twitter profile"
+    
+    con = lite.connect(DATABASE)
 
-con = lite.connect(DATABASE)
+    con.row_factory = lite.Row
+    
+    cur2 = con.cursor()
+    cur2.execute("SELECT COUNT( * ) FROM Profiles P WHERE P.idProfile = "+str(idProfile))
+    numberOfRows = cur2.fetchone()[0]
+    
+    print numberOfRows
 
-con.row_factory = lite.Row
-	
-cur = con.cursor()
-cur.execute("SELECT idFriend, COUNT( * ) AS total FROM Profiles P JOIN Users U WHERE P.idProfile = "+str(idProfile)+" AND P.idFollower = U.idUser GROUP BY U.idFriend ORDER BY total DESC LIMIT 0,10")
-rows = cur.fetchall()
-	
-i = 0;
-	
-for criterias in rows:
-	print str(criterias['idFriend']) + " appears : " + str(criterias['total'])
-	
-con.close()
+    cur = con.cursor()
+    cur.execute("SELECT idFriend, COUNT( * ) AS total FROM Profiles P JOIN Users U WHERE P.idProfile = "+str(idProfile)+" AND P.idFollower = U.idUser GROUP BY U.idFriend ORDER BY total DESC LIMIT 10")
+    rows = cur.fetchall()
+    
+    myArray = []
+    
+    for criterias in rows:
+        print str(criterias["idFriend"])
+        myArray.append(float(criterias['total'])/float(numberOfRows))
+
+    con.close()
+    
+    return myArray
+
+
+for value in arrayForProfile(270533441):
+    print str(value) + ", "
+
