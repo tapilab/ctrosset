@@ -10,7 +10,7 @@ DATABASE = ''
 APP_KEY = {}
 APP_SECRET = {}
 
-foobar = open( "foobar.config", "r" )
+foobar = open( "/home/ctrosset/ctrosset/foobar.config", "r" )
 
 i=0
 for line in foobar:
