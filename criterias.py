@@ -21,34 +21,43 @@ for line in foobar:
     
 foobar.close()
 
-def arrayForProfile(idProfile):
-    "Build the array from a twitter profile"
+con = lite.connect(DATABASE)
     
-    con = lite.connect(DATABASE)
+con.row_factory = lite.Row
 
-    con.row_factory = lite.Row
+MAX_CIE = 2
+MAX_CRITERIAS = 2
+
+def arrayForProfile(idProfile,matrix):
+    "Build the array from a twitter profile"
     
     cur2 = con.cursor()
     cur2.execute("SELECT COUNT( * ) FROM Profiles P WHERE P.idProfile = "+str(idProfile))
     numberOfRows = cur2.fetchone()[0]
-    
-    print numberOfRows
 
     cur = con.cursor()
-    cur.execute("SELECT idFriend, COUNT( * ) AS total FROM Profiles P JOIN Users U WHERE P.idProfile = "+str(idProfile)+" AND P.idFollower = U.idUser GROUP BY U.idFriend ORDER BY total DESC LIMIT 10")
+    cur.execute("SELECT idFriend, COUNT( * ) AS total FROM Profiles P JOIN Users U WHERE P.idProfile = "+str(idProfile)+" AND P.idFollower = U.idUser GROUP BY U.idFriend ORDER BY total DESC LIMIT "+str(MAX_CRITERIAS))
     rows = cur.fetchall()
     
-    myArray = []
+    array = []
     
     for criterias in rows:
-        print str(criterias["idFriend"])
-        myArray.append(float(criterias['total'])/float(numberOfRows))
-
-    con.close()
+        array.append(float(criterias['total'])/float(numberOfRows))
     
-    return myArray
+    matrix.append(array)
+    
+    return
 
 
-for value in arrayForProfile(270533441):
-    print str(value) + ", "
+cur = con.cursor()
+cur.execute("SELECT idProfile FROM Profiles GROUP BY idProfile LIMIT "+str(MAX_CIE))
+rows = cur.fetchall()
 
+x = []
+
+for profile in rows:
+    arrayForProfile(profile["idProfile"],x)
+
+print x
+
+con.close()
