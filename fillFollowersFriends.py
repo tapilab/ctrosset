@@ -45,7 +45,7 @@ treatedInFile = file.read()
 file.close()
 	
 cur = con.cursor()
-cur.execute("SELECT Profiles.idFollower FROM Profiles LEFT OUTER JOIN Users on Profiles.idFollower = Users.idUser WHERE Users.idUser is null LIMIT 0,100")
+cur.execute("SELECT Profiles.idFollower FROM Profiles LEFT OUTER JOIN Users on Profiles.idFollower = Users.idUser WHERE Users.idUser is null GROUP BY Profiles.idFollower LIMIT 0,100")
 rows = cur.fetchall()
 	
 currentAccount = 0
