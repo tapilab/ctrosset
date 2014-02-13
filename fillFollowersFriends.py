@@ -40,10 +40,6 @@ con = lite.connect(DATABASE)
 
 con.row_factory = lite.Row
 	
-file = open(FILE, 'r')
-treatedInFile = file.read()
-file.close()
-	
 cur = con.cursor()
 cur.execute("SELECT Profiles.idFollower FROM Profiles LEFT OUTER JOIN Users on Profiles.idFollower = Users.idUser WHERE Users.idUser is null GROUP BY Profiles.idFollower LIMIT 0,100")
 rows = cur.fetchall()
