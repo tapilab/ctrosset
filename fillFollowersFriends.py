@@ -46,7 +46,7 @@ with con:
 	
 	cur = con.cursor()
 #	cur.execute("SELECT * FROM Profiles LIMIT "+treatedInFile+",200")
- 	cur.execute("SELECT * FROM Profiles")
+ 	cur.execute("SELECT Profiles.idFollower FROM Profiles LEFT OUTER JOIN Users on Profiles.idFollower = Users.idUser WHERE Users.idUser is null")
 	rows = cur.fetchall()
 	
 	currentAccount = 0
