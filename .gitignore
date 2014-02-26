@@ -3,3 +3,4 @@ logs
 foobar.config
 treated
 .DS_Store
+*.pkl
