@@ -1,5 +1,6 @@
 import sqlite3 as lite
 import sys
+from scipy.sparse import lil_matrix
 
 APP_KEY = {}
 APP_SECRET = {}
@@ -25,39 +26,46 @@ con = lite.connect(DATABASE)
     
 con.row_factory = lite.Row
 
-MAX_CIE = 2
-MAX_CRITERIAS = 2
+cur = con.cursor()
+cur.execute("SELECT COUNT(*) FROM Friends")
+numberOfCriterias = cur.fetchone()[0]
 
-def arrayForProfile(idProfile,matrix):
-    "Build the array from a twitter profile"
-    
-    cur2 = con.cursor()
-    cur2.execute("SELECT COUNT( * ) FROM Profiles P WHERE P.idProfile = "+str(idProfile))
-    numberOfRows = cur2.fetchone()[0]
+print numberOfCriterias
 
-    cur = con.cursor()
-    cur.execute("SELECT idFriend, COUNT( * ) AS total FROM Profiles P JOIN Users U WHERE P.idProfile = "+str(idProfile)+" AND P.idFollower = U.idUser GROUP BY U.idFriend ORDER BY total DESC LIMIT "+str(MAX_CRITERIAS))
-    rows = cur.fetchall()
-    
-    array = []
-    
-    for criterias in rows:
-        array.append(float(criterias['total'])/float(numberOfRows))
-    
-    matrix.append(array)
-    
-    return
-
+matrix = lil_matrix( (200,numberOfCriterias+1) )
 
 cur = con.cursor()
-cur.execute("SELECT idProfile FROM Profiles GROUP BY idProfile LIMIT "+str(MAX_CIE))
+cur.execute("SELECT idProfile FROM Profiles GROUP BY idProfile LIMIT 35,200")
 rows = cur.fetchall()
 
-x = []
+iCie = -1
 
 for profile in rows:
-    arrayForProfile(profile["idProfile"],x)
+    print "SQL"
+    iCie+=1
+    cur2 = con.cursor()
+    cur2.execute("SELECT COUNT( * ) FROM Profiles P WHERE P.idProfile = "+str(profile['idProfile']))
+    numberOfRows = cur2.fetchone()[0]
+    
+    cur4 = con.cursor()
+    cur4.execute("SELECT idFriend, COUNT( * ) AS total FROM Profiles P JOIN Users U WHERE P.idProfile = "+str(profile['idProfile'])+" AND P.idFollower = U.idUser GROUP BY U.idFriend ORDER BY total DESC")
+    rows = cur4.fetchall()
+    
+    i=0
+    print "RDY"
+    
+    for criterias in rows:
+        value = (float(criterias['total'])/float(numberOfRows))
+        cur3 = con.cursor()
+        cur3.execute("SELECT id FROM Friends WHERE idFriend="+str(criterias['idFriend']))
+        idFetched = cur3.fetchone()[0]
+        print iCie
+        print idFetched
+        matrix[iCie,idFetched] = value
+        i+=1
+        print i
+        cur5 = con.cursor()
+        cur5.execute("INSERT INTO Matrix VALUES ('"+str(profile['idProfile'])+"','"+str(idFetched)+"','"+str(value)+"')")
 
-print x
-
+con.commit()
 con.close()

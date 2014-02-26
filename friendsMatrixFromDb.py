@@ -32,15 +32,15 @@ cur.execute("SELECT COUNT(*) FROM Friends")
 numberOfCriterias = cur.fetchone()[0]
 
 cur = con.cursor()
-cur.execute("SELECT * FROM Matrix")
+cur.execute("SELECT * FROM Friends")
 
 rows = cur.fetchall()
 
-matrix = lil_matrix((132,numberOfCriterias+1))
+friendsMatrix = lil_matrix((numberOfCriterias+1,1))
 
 for row in rows:
-	matrix[row['idProfile'],row['idCriteria']] = row['coef']
+	friendsMatrix[row['id'],0] = row['idFriend']
 	
-f = open('matrix.pkl','wb')
-cPickle.dump(matrix,f,-1)
+f = open('friendsMatrix.pkl','wb')
+cPickle.dump(friendsMatrix,f,-1)
 f.close()
