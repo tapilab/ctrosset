@@ -29,6 +29,7 @@ for line in foobar:
     
 foobar.close()
 
+
 print "Loading matrix X ..."
 
 f = open('matrix.pkl','rb') # open the file in read binary mode
@@ -37,26 +38,6 @@ X = cPickle.load(f)
 f.close()
 
 print "matrix X loaded"
-
-"""
-print "Loading profiles matrix ..."
-
-f = open('profilesMatrix.pkl','rb') # open the file in read binary mode
-# load the data in the .pkl file into a new variable spmat
-profilesMatrix = cPickle.load(f) 
-f.close()
-
-print "profiles matrix loaded"
-
-print "Loading friends matrix ..."
-
-f = open('friendsMatrix.pkl','rb') # open the file in read binary mode
-# load the data in the .pkl file into a new variable spmat
-friendsMatrix = cPickle.load(f) 
-f.close()
-
-print "friends matrix loaded"
-"""
 
 print "Loading Y matrix ..."
 
@@ -76,33 +57,18 @@ for row in rows:
 	
 print "Y matrix loaded"
 
-# Create linear regression object
-regr = linear_model.LinearRegression()
 
-# Train the model using the training sets
-regr.fit(X, Y.todense())
-
-f = open('regression.pkl','wb')
-cPickle.dump(regr,f,-1)
+f = open('regression.pkl','rb') # open the file in read binary mode
+# load the data in the .pkl file into a new variable spmat
+regr = cPickle.load(f) 
 f.close()
+
 
 print('Coefficients: \n', regr.coef_)
 # The mean square error
 z = (regr.predict(X) - Y)
 z = np.array(list(z.data))
 print("Residual sum of squares: %.2f"
-      % np.mean(z ** 2))
+      % np.mean(2 ** z))
 # Explained variance score: 1 is perfect prediction
 print('Variance score: %.2f' % regr.score(X, Y))
-
-# Plot outputs
-"""
-pl.scatter(X, Y,  color='black')
-pl.plot(X, regr.predict(X), color='blue',
-        linewidth=3)
-
-pl.xticks(())
-pl.yticks(())
-
-pl.show()
-"""
