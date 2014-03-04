@@ -5,6 +5,9 @@ import cPickle
 import pylab as pl
 import numpy as np
 from sklearn import linear_model
+from sklearn import cross_validation
+from sklearn import datasets
+from sklearn import svm
 
 FILE = ''
 DATABASE = ''
@@ -65,10 +68,8 @@ f.close()
 
 
 print('Coefficients: \n', regr.coef_)
-# The mean square error
-z = (regr.predict(X) - Y)
-z = np.array(list(z.data))
-print("Residual sum of squares: %.2f"
-      % np.mean(z ** np.int(2)))
-# Explained variance score: 1 is perfect prediction
-print('Variance score: %.2f' % regr.score(X, Y))
+
+X_train, X_test, y_train, y_test = cross_validation.train_test_split(X.todense(), Y.todense(), test_size=0.4, random_state=0)
+
+clf = svm.SVC(kernel='linear', C=1).fit(X_train, y_train)
+clf.score(X_test, y_test)
