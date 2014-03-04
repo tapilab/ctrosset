@@ -28,25 +28,17 @@ con = lite.connect(DATABASE)
 con.row_factory = lite.Row
 
 cur = con.cursor()
-cur.execute("SELECT COUNT(*) FROM Friends")
-numberOfCriterias = cur.fetchone()[0]
-
-cur.execute("SELECT * FROM Matrix")
+cur.execute("SELECT idCriteria FROM Matrix GROUP BY idCriteria HAVING COUNT(*)<50")
 
 rows = cur.fetchall()
-
-matrix = lil_matrix((132,numberOfCriterias+1))
 
 i=0
 
 for row in rows:
-	cur.execute("SELECT id FROM Friends WHERE save='"+str(row['idCriteria'])+"'")
-	id = cur.fetchone()[0]
-	matrix[row['idProfile'],id] = row['coef']
-	if(row['idProfile']!=i):
-		i=row['idProfile']
-		print i
+	cur.execute("DELETE FROM Matrix WHERE idCriteria='"+str(row['idCriteria'])+"'")
+	cur.execute("DELETE FROM Friends WHERE save='"+str(row['idCriteria'])+"'")
+	print i 
+	i+=1
 	
-f = open('matrix','wb')
-cPickle.dump(matrix,f,-1)
-f.close()
+con.commit()
+con.close()
