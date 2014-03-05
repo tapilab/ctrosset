@@ -44,21 +44,13 @@ print "matrix X loaded"
 
 print "Loading Y matrix ..."
 
-Y = lil_matrix((132,2))
-
-con = lite.connect(DATABASE)
-    
-con.row_factory = lite.Row
-
-cur = con.cursor()
-cur.execute("SELECT Male,id FROM ProfilesIds")
-rows = cur.fetchall()
-
-for row in rows:
-	Y[row['id'],0] = row['Male']
-	Y[row['id'],1] = 100-row['Male']
+f = open('yMaleFemale.pkl','rb') # open the file in read binary mode
+# load the data in the .pkl file into a new variable spmat
+Y = cPickle.load(f)
+f.close()
 	
 print "Y matrix loaded"
+
 
 
 f = open('regression.pkl','rb') # open the file in read binary mode
