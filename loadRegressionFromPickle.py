@@ -5,14 +5,13 @@ import cPickle
 import pylab as pl
 import numpy as np
 from sklearn import linear_model
+import loadConfig
 
 FILE = ''
 DATABASE = ''
-
 APP_KEY = {}
 APP_SECRET = {}
-
-foobar = open( "foobar.config", "r" )
+loadConfig.loadConfig(FILE,DATABASE,APP_KEY,APP_SECRET)
 
 i=0
 for line in foobar:
