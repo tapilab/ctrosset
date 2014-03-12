@@ -8,6 +8,8 @@ import numpy as np
 from sklearn import linear_model
 from sklearn import cross_validation
 from sklearn.linear_model import Ridge
+from sklearn.cross_validation import cross_val_score as cv
+from sklearn.cross_validation import KFold
 
 FILE = ''
 DATABASE = ''
@@ -50,6 +52,6 @@ print('Coefficients: \n', regr.coef_)
 
 clf = Ridge(alpha=1.0)
 clf.fit(X, Y.todense())
-clf.predict(X)
+print clf.predict(X)
 
-np.mean(cv(clf, X, Y.todense(),scoring='mean_squared_error'))
+print np.mean(cv(clf, X, Y.todense(),scoring='mean_squared_error'))
