@@ -53,7 +53,7 @@ print('Coefficients: \n', regr.coef_)
 
 print 'Computing cross validation'
 
-clf = Ridge(alpha=1)
+clf = Ridge(alpha=0.02)
 clf.fit(X, Y.todense())
 print clf.predict(X)
 
@@ -72,12 +72,20 @@ for i in range(0,n_groups):
     predicted_values.append(round(predict_table[i][0]))
     true_values.append(round(Y[i,0]))
     x.append(i)
-
+"""
 plot(x,predicted_values,'r',label='Predicted',color='blue')
 plot(x,true_values,'r',label='True',color='red')
 
 xlabel('Cie ID')
 ylabel('% of Male')
+title('True vs Predicted')
+legend()
+"""
+
+plot(predicted_values,true_values,'.')
+plot(x[0:100],x[0:100],'r',color='black')
+xlabel('% of Male Predicted')
+ylabel('% of Male True')
 title('True vs Predicted')
 legend()
 
