@@ -11,6 +11,7 @@ from sklearn.linear_model import Ridge
 from sklearn.cross_validation import cross_val_score as cv
 from sklearn.cross_validation import KFold
 import matplotlib.pyplot as plt
+from pylab import *
 
 FILE = ''
 DATABASE = ''
@@ -52,7 +53,7 @@ print('Coefficients: \n', regr.coef_)
 
 print 'Computing cross validation'
 
-clf = Ridge(alpha=0.1)
+clf = Ridge(alpha=1)
 clf.fit(X, Y.todense())
 print clf.predict(X)
 
@@ -65,35 +66,19 @@ n_groups = predict_table.shape[0]
 
 predicted_values = []
 true_values = []
+x = []
 
 for i in range(0,n_groups):
     predicted_values.append(round(predict_table[i][0]))
     true_values.append(round(Y[i,0]))
+    x.append(i)
 
-fig, ax = plt.subplots()
+plot(x,predicted_values,'r',label='Predicted',color='blue')
+plot(x,true_values,'r',label='True',color='red')
 
-index = np.arange(n_groups)
-bar_width = 0.35
+xlabel('Cie ID')
+ylabel('% of Male')
+title('True vs Predicted')
+legend()
 
-opacity = 0.4
-error_config = {'ecolor': '0.3'}
-
-rects1 = plt.bar(index, true_values, bar_width,
-                 alpha=opacity,
-                 color='b',
-                 error_kw=error_config,
-                 label='TRUE')
-
-rects2 = plt.bar(index, predicted_values, bar_width,
-                 alpha=opacity,
-                 color='r',
-                 error_kw=error_config,
-                 label='Predicted')
-
-plt.xlabel('Cie ID')
-plt.ylabel('% of Male')
-plt.title('True vs Predicted')
-plt.legend()
-
-plt.tight_layout()
-plt.show()
+show()

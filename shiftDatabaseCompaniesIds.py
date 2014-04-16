@@ -15,15 +15,8 @@ con = lite.connect(DATABASE)
 con.row_factory = lite.Row
 
 cur = con.cursor()
-cur.execute("SELECT id FROM Friends");
-
-rows = cur.fetchall()
-
-i = 0
-
-for row in rows:
-	cur.execute("UPDATE Friends SET id="+str(i)+" WHERE id="+str(row['id']))
-	i+=1
+cur.execute("UPDATE Matrix SET idProfile=idProfile-1");
+cur.execute("UPDATE ProfilesIds SET id=id-1");
 	
 con.commit()
 con.close()
