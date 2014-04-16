@@ -15,15 +15,19 @@ con = lite.connect(DATABASE)
 con.row_factory = lite.Row
 
 cur = con.cursor()
-cur.execute("SELECT id FROM Friends");
+cur.execute("SELECT COUNT(*) FROM Friends")
+numberOfCriterias = cur.fetchone()[0]
+
+cur = con.cursor()
+cur.execute("SELECT * FROM Friends")
 
 rows = cur.fetchall()
 
-i = 1
+friendsMatrix = lil_matrix((numberOfCriterias+1,1))
 
 for row in rows:
-	cur.execute("UPDATE Friends SET id="+str(i)+" WHERE id="+str(row['id']))
-	i+=1
+	friendsMatrix[row['id'],0] = row['idFriend']
 	
-con.commit()
-con.close()
+f = open('friendsMatrix.pkl','wb')
+cPickle.dump(friendsMatrix,f,-1)
+f.close()

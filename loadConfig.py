@@ -1,7 +1,7 @@
 import sys
 
 def loadConfig(FILE,DATABASE,APP_KEY,APP_SECRET):
-	foobar = open("foobar.config", "r")
+	foobar = open("/Users/cyriltrosset/Dropbox/IIT/Special project/ctrosset/foobar.config", "r")
 	i=0
 	for line in foobar:
 		line=line.rstrip('\n')

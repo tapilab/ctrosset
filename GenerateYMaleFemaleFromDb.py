@@ -5,7 +5,7 @@ import cPickle
 import loadConfig
 
 FILE = ''
-DATABASE = ''
+DATABASE = '/Users/cyriltrosset/Desktop/SPECIAL_PROJ_DB/database-50.sqlite'
 APP_KEY = {}
 APP_SECRET = {}
 loadConfig.loadConfig(FILE,DATABASE,APP_KEY,APP_SECRET)
@@ -15,19 +15,20 @@ con = lite.connect(DATABASE)
 con.row_factory = lite.Row
 
 cur = con.cursor()
-cur.execute("SELECT COUNT(*) FROM Friends")
+cur.execute("SELECT COUNT(*) FROM ProfilesIds")
 numberOfCriterias = cur.fetchone()[0]
 
 cur = con.cursor()
-cur.execute("SELECT * FROM Friends")
+cur.execute("SELECT * FROM ProfilesIds")
 
 rows = cur.fetchall()
 
-friendsMatrix = lil_matrix((numberOfCriterias+1,1))
+YMaleFemaleMatrix = lil_matrix((numberOfCriterias+1,2))
 
 for row in rows:
-	friendsMatrix[row['id'],0] = row['idFriend']
+	YMaleFemaleMatrix[row['id'],0] = row['Male']
+	YMaleFemaleMatrix[row['id'],1] = 100-row['Male']
 	
-f = open('friendsMatrix.pkl','wb')
-cPickle.dump(friendsMatrix,f,-1)
+f = open('YMaleFemale.pkl','wb')
+cPickle.dump(YMaleFemaleMatrix,f,-1)
 f.close()

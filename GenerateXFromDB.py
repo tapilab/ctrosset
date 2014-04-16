@@ -5,7 +5,7 @@ import cPickle
 import loadConfig
 
 FILE = ''
-DATABASE = ''
+DATABASE = '/Users/cyriltrosset/Desktop/SPECIAL_PROJ_DB/database-50.sqlite'
 APP_KEY = {}
 APP_SECRET = {}
 loadConfig.loadConfig(FILE,DATABASE,APP_KEY,APP_SECRET)
@@ -34,6 +34,6 @@ for row in rows:
 		i=row['idProfile']
 		print i
 	
-f = open('matrix','wb')
+f = open('X.pkl','wb')
 cPickle.dump(matrix,f,-1)
 f.close()

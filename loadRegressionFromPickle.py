@@ -31,7 +31,7 @@ foobar.close()
 
 print "Loading matrix X ..."
 
-f = open('matrix.pkl','rb') # open the file in read binary mode
+f = open('X.pkl','rb') # open the file in read binary mode
 # load the data in the .pkl file into a new variable spmat
 X = cPickle.load(f) 
 f.close()
