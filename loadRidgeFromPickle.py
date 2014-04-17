@@ -41,16 +41,24 @@ f.close()
 print "Y matrix loaded"
 
 
-Xd = X.todense()
-Yd = Y.todense()
-clf = Ridge(alpha=0.1)
-cv = cross_validation.KFold(len(Yd), n_folds=10, random_state=1234)
-for train, test in cv:
-	print 'train indices:', train
-	print 'test indices:', test
-	clf.fit(Xd[train], Yd[train])
-	preds = clf.predict(Xd[test])
-	
+'''
+f = open('regression.pkl','rb') # open the file in read binary mode
+# load the data in the .pkl file into a new variable spmat
+regr = cPickle.load(f) 
+f.close()
+
+
+print('Coefficients: \n', regr.coef_)
+'''
+
+print 'Computing cross validation'
+
+clf = Ridge(alpha=1)
+clf.fit(X, Y.todense())
+print clf.predict(X)
+
+print np.mean(cv(clf, X, Y.todense(),scoring='mean_squared_error'))
+
 
 #PLOT PREDICTED VS "TRUE"
 predict_table = clf.predict(X)
@@ -64,7 +72,15 @@ for i in range(0,n_groups):
     predicted_values.append(round(predict_table[i][0]))
     true_values.append(round(Y[i,0]))
     x.append(i)
-    
+"""
+plot(x,predicted_values,'r',label='Predicted',color='blue')
+plot(x,true_values,'r',label='True',color='red')
+
+xlabel('Cie ID')
+ylabel('% of Male')
+title('True vs Predicted')
+legend()
+"""
 
 plot(predicted_values,true_values,'.')
 plot(x[0:100],x[0:100],'r',color='black')
