@@ -5,7 +5,7 @@ import cPickle
 import loadConfig
 
 FILE = ''
-DATABASE = ''
+DATABASE = '/Users/cyriltrosset/Desktop/SPECIAL_PROJ_DB/database-50.sqlite'
 APP_KEY = {}
 APP_SECRET = {}
 loadConfig.loadConfig(FILE,DATABASE,APP_KEY,APP_SECRET)

@@ -12,16 +12,17 @@ from sklearn.cross_validation import cross_val_score as cv
 from sklearn.cross_validation import KFold
 import matplotlib.pyplot as plt
 from pylab import *
+import scipy.stats as scistat
 
 FILE = ''
-DATABASE = ''
+DATABASE = '/Users/cyriltrosset/Desktop/SPECIAL_PROJ_DB/database-50.sqlite'
 
 APP_KEY = {}
 APP_SECRET = {}
 
 loadConfig.loadConfig(FILE,DATABASE,APP_KEY,APP_SECRET)
 
-"""
+
 print "Loading matrix X ..."
 
 f = open('X.pkl','rb') # open the file in read binary mode
@@ -43,7 +44,6 @@ print "Y matrix loaded"
 
 Xd = X.todense()
 Yd = Y[:,0].todense()
-"""
 
 clf = Ridge(alpha=1)
 cv = cross_validation.KFold(len(Yd), n_folds=10, random_state=1234)
@@ -69,4 +69,33 @@ ylabel('% of Male True')
 title('True vs Predicted')
 legend()
 
+corr = scistat.pearsonr(predicted_values, true_values)
+print corr
+
 show()
+
+#PRINT TOP 10 WEIGHTS
+
+f = open('friendsMatrix.pkl','rb') # open the file in read binary mode
+# load the data in the .pkl file into a new variable spmat
+friends = cPickle.load(f)
+f.close()
+
+maleWeights = []
+maleString = []
+maleValues = []
+sup = 99999999
+for i in range(0,10):
+    max = 0
+    index = 0
+    for j in range(0,clf.coef_.shape[1]):
+        if(clf.coef_[0][j]>max and clf.coef_[0][j]<sup):
+            max = clf.coef_[0][j]
+            index = j
+    maleWeights.append(friends[index,0])
+    maleValues.append(max)
+    sup = max
+
+print maleWeights
+
+
