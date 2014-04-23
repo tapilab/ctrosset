@@ -43,7 +43,8 @@ print "Y matrix loaded"
 
 
 Xd = X.todense()
-Yd = Y[:,0].todense()
+Yd = Y.todense()
+YdMale = Y[:,0].todense()
 
 clf = Ridge(alpha=1)
 cv = cross_validation.KFold(len(Yd), n_folds=10, random_state=1234)
@@ -56,23 +57,26 @@ for train, test in cv:
 	print 'test indices:', test
 	clf.fit(Xd[train], Yd[train])
 	preds = clf.predict(Xd[test])	
-	predicted_values.extend(preds[:,0])
-	true_values.extend(np.squeeze(np.asarray(Yd[test]))) 
+	predicted_values.extend(preds)
+	true_values.extend(np.squeeze(np.asarray(Yd[test])))
 	
 
 #PLOT PREDICTED VS "TRUE"
 
 plot(predicted_values,true_values,'.')
 plot(range(0,100),range(0,100),'r',color='black')
-xlabel('% of Male Predicted')
-ylabel('% of Male True')
+xlabel('% Predicted')
+ylabel('% True')
 title('True vs Predicted')
 legend()
 
-corr = scistat.pearsonr(predicted_values, true_values)
-print corr
-
 show()
+
+'''
+corr = scistat.pearsonr(predicted_values, true_values)
+print "Corr score : "
+print corr
+'''
 
 #PRINT TOP 10 WEIGHTS
 
@@ -96,6 +100,27 @@ for i in range(0,10):
     maleValues.append(max)
     sup = max
 
+print "Male TOP 10 twitter IDs : "
 print maleWeights
+
+femaleWeights = []
+femaleString = []
+femaleValues = []
+sup = 99999999
+for i in range(0,10):
+    max = 0
+    index = 0
+    for j in range(0,clf.coef_.shape[1]):
+        if(clf.coef_[1][j]>max and clf.coef_[1][j]<sup):
+            max = clf.coef_[1][j]
+            index = j
+    femaleWeights.append(friends[index,0])
+    femaleValues.append(max)
+    sup = max
+
+print "Female TOP 10 twitter IDs : "
+print femaleWeights
+
+
 
 
