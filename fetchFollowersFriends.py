@@ -5,11 +5,7 @@ import sqlite3 as lite
 import sys
 import loadConfig
 
-FILE = ''
-DATABASE = ''
-APP_KEY = {}
-APP_SECRET = {}
-loadConfig.loadConfig(FILE,DATABASE,APP_KEY,APP_SECRET)
+execfile('/Users/cyriltrosset/Dropbox/IIT/Special project/ctrosset/loadConfig.py')
 
 print "Connecting ..."
 twitter = Twython(APP_KEY[0], APP_SECRET[0], oauth_version=2)
@@ -25,7 +21,7 @@ con = lite.connect(DATABASE)
 con.row_factory = lite.Row
 	
 cur = con.cursor()
-cur.execute("SELECT Profiles.idFollower FROM Profiles LEFT OUTER JOIN Users on Profiles.idFollower = Users.idUser WHERE Users.idUser is null GROUP BY Profiles.idFollower LIMIT 0,100")
+cur.execute("SELECT Profiles.idFollower FROM Profiles LEFT OUTER JOIN Users on Profiles.idFollower = Users.idUser WHERE Users.idUser is null GROUP BY Profiles.idFollower LIMIT 0,200")
 rows = cur.fetchall()
 	
 currentAccount = 0
@@ -51,9 +47,9 @@ for row in rows:
             currentAccount+=1
             if currentAccount == len(APP_KEY):
                 print 'Limit excedeed and all accounts have been used, quitting ...'
-                
                 con.commit()
                 con.close()
+                execfile('/Users/cyriltrosset/Dropbox/IIT/Special project/ctrosset/remainRows.py')
                 sys.exit()
             else:
                 print 'Switching account ...'
@@ -78,3 +74,4 @@ for row in rows:
 
 con.commit()
 con.close()
+execfile('/Users/cyriltrosset/Dropbox/IIT/Special project/ctrosset/remainRows.py')

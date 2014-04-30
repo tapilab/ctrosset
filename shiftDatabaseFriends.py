@@ -2,20 +2,15 @@ import sqlite3 as lite
 import sys
 from scipy.sparse import lil_matrix
 import cPickle
-import loadConfig
 
-FILE = ''
-DATABASE = '/Users/cyriltrosset/Desktop/SPECIAL_PROJ_DB/database-50.sqlite'
-APP_KEY = {}
-APP_SECRET = {}
-loadConfig.loadConfig(FILE,DATABASE,APP_KEY,APP_SECRET)
+execfile('loadConfig.py')
 
 con = lite.connect(DATABASE)
     
 con.row_factory = lite.Row
 
 cur = con.cursor()
-cur.execute("SELECT id FROM Friends");
+cur.execute("SELECT id FROM Friends ORDER BY id");
 
 rows = cur.fetchall()
 

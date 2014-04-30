@@ -5,11 +5,7 @@ import sqlite3 as lite
 import sys
 import loadConfig
 
-FILE = ''
-DATABASE = ''
-APP_KEY = {}
-APP_SECRET = {}
-loadConfig.loadConfig(FILE,DATABASE,APP_KEY,APP_SECRET)
+execfile('loadConfig.py')
 
 
 con = lite.connect(DATABASE)
@@ -20,4 +16,4 @@ cur = con.cursor()
 cur.execute("SELECT COUNT( * ) FROM Profiles LEFT OUTER JOIN Users ON Profiles.idFollower = Users.idUser WHERE Users.idUser IS NULL ")
 numberOfRows = cur.fetchone()[0]
 	
-print str(numberOfRows);
+print str(numberOfRows) + " rows remaining";

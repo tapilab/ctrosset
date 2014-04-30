@@ -2,13 +2,8 @@ import sqlite3 as lite
 import sys
 from scipy.sparse import lil_matrix
 import cPickle
-import loadConfig
 
-FILE = ''
-DATABASE = '/Users/cyriltrosset/Desktop/SPECIAL_PROJ_DB/database-50.sqlite'
-APP_KEY = {}
-APP_SECRET = {}
-loadConfig.loadConfig(FILE,DATABASE,APP_KEY,APP_SECRET)
+execfile('loadConfig.py')
 
 con = lite.connect(DATABASE)
     
@@ -18,22 +13,26 @@ cur = con.cursor()
 cur.execute("SELECT COUNT(*) FROM Friends")
 numberOfCriterias = cur.fetchone()[0]
 
+cur.execute("SELECT COUNT(*) FROM ProfilesIds")
+numberOfCie = cur.fetchone()[0]
+
 cur.execute("SELECT * FROM Matrix")
 
 rows = cur.fetchall()
 
-matrix = lil_matrix((132,numberOfCriterias+1))
+matrix = lil_matrix((numberOfCie,numberOfCriterias))
 
 i=0
 
 for row in rows:
-	cur.execute("SELECT id FROM Friends WHERE save='"+str(row['idCriteria'])+"'")
-	id = cur.fetchone()[0]
-	matrix[row['idProfile'],id] = row['coef']
-	if(row['idProfile']!=i):
-		i=row['idProfile']
-		print i
-	
+    cur.execute("SELECT id FROM Friends WHERE idFriend='"+str(row['idCriteria'])+"'")
+    idCol = cur.fetchone()[0]
+    cur.execute("SELECT id FROM ProfilesIds WHERE idProfile='"+str(row['idProfile'])+"'")
+    idRow = cur.fetchone()[0]
+    matrix[idRow,idCol] = row['coef']
+    if(row['idProfile']!=i):
+        i=row['idProfile']
+        print i
 f = open('X.pkl','wb')
 cPickle.dump(matrix,f,-1)
 f.close()

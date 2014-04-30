@@ -5,13 +5,8 @@ import sqlite3 as lite
 import sys
 from scipy.sparse import lil_matrix
 import cPickle
-import loadConfig
 
-FILE = ''
-DATABASE = ''
-APP_KEY = {}
-APP_SECRET = {}
-loadConfig.loadConfig(FILE,DATABASE,APP_KEY,APP_SECRET)
+execfile('loadConfig.py')
 
 print "Connecting ..."
 twitter = Twython(APP_KEY[0], APP_SECRET[0], oauth_version=2)
@@ -25,18 +20,19 @@ con.row_factory = lite.Row
 
 currentAccount = 0
 
-ins = open( "cie.txt", "r" )
-
+cur = con.cursor()
+cur.execute("SELECT * FROM ProfilesIds WHERE screenName=''")
+rows = cur.fetchall()
 		
-for line in ins:
+for row in rows:
 	line.rstrip('\n')
 	line.rstrip()
-	USER_NAME = line
+	USER_ID = row['idProfile']
 	
 	user = 0
 	
 	try:
-		user = twitter.show_user(screen_name = USER_NAME)
+		user = twitter.show_user(user_id = USER_ID)
 	except TwythonRateLimitError:
 		if currentAccount == len(APP_KEY):
 			print 'Limit excedeed and all accounts have been used, quitting ...'
@@ -50,7 +46,7 @@ for line in ins:
 			ACCESS_TOKEN = twitter.obtain_access_token()
 			twitter = Twython(APP_KEY[currentAccount], access_token=ACCESS_TOKEN)
 			print 'OK'
-			user = twitter.show_user(screen_name = USER_NAME)
+			user = twitter.show_user(user_id = USER_ID)
 			
 	print "UPDATE ProfilesIds SET screenName='" + user['screen_name'] + "' WHERE idProfile='" + user['id_str'] + "'"
 		
