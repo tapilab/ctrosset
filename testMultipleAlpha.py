@@ -27,7 +27,7 @@ print "matrix X loaded"
 
 print "Loading Y matrix ..."
 
-f = open('yMaleFemale.pkl','rb') # open the file in read binary mode
+f = open('yAge.pkl','rb') # open the file in read binary mode
 # load the data in the .pkl file into a new variable spmat
 Y = cPickle.load(f)
 f.close()
