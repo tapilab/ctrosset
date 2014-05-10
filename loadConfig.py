@@ -5,12 +5,10 @@ i=0
 for line in foobar:
     line=line.rstrip('\n')
     if i==0:
-        FILE = line
-    elif i==1:
         DATABASE = line
-    elif i==2:
+    elif i==1:
         APP_KEY = line.split(',')
-    elif i==3:
+    elif i==2:
         APP_SECRET = line.split(',')
     i+=1
 

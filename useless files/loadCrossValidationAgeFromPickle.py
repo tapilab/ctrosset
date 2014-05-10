@@ -39,7 +39,7 @@ print "Y matrix loaded"
 Xd = X.todense()
 Yd = Y.todense()
 
-clf = Ridge(alpha=0.01)
+clf = Ridge(alpha=5.1)
 cv = cross_validation.KFold(len(Yd), n_folds=10, random_state=1234)
 
 predicted_values = []
@@ -58,13 +58,13 @@ for train, test in cv:
 
 #PLOT PREDICTED VS "TRUE"
 
-mpl.axes.set_default_color_cycle(['r', 'g', 'b', 'c','m','y','k','#ff3ed8','#ffd83e'])
+mpl.axes.set_default_color_cycle(['r', 'g', 'b', 'c','m','y'])
 p1 = plot(predicted_values,true_values,'.')
 p2 = plot(range(0,100),range(0,100),'r',color='black')
 xlabel('% Predicted')
 ylabel('% True')
 title('True vs Predicted')
-legend(p1,['0-16','17-19','20-24','25-29','30-34','35-39','40-49','50-59','60+'])
+legend(p1,['18-24','25-34','35-44','45-54','55-64','65+'])
 
 #Columns corr
 
@@ -86,11 +86,11 @@ f = open('friendsMatrix.pkl','rb') # open the file in read binary mode
 friends = cPickle.load(f)
 f.close()
 
-twitter = Twython(APP_KEY[2], APP_SECRET[2], oauth_version=2)
+twitter = Twython(APP_KEY[0], APP_SECRET[0], oauth_version=2)
 ACCESS_TOKEN = twitter.obtain_access_token()
 
 
-twitter = Twython(APP_KEY[2], access_token=ACCESS_TOKEN)
+twitter = Twython(APP_KEY[0], access_token=ACCESS_TOKEN)
 
 for k in range(0,clf.coef_.shape[0]):
     Weights = []
@@ -114,36 +114,6 @@ for k in range(0,clf.coef_.shape[0]):
         sup = max
     print "Column " + str(k) + " TOP 10 twitter IDs : "
     print Strings
-
-#PRINT TOP 10 ERRORS
-
-con = lite.connect(DATABASE)
-
-con.row_factory = lite.Row
-
-cur = con.cursor()
-
-CieId = []
-CieString = []
-ErrorValue = []
-sup = 99999999
-for i in range(0,10):
-    max = 0
-    index = 0
-    for j in range(0,len(true_values)):
-        if(abs(true_values[j][0]-predicted_values[j][0])>max and abs(true_values[j][0]-predicted_values[j][0])<sup):
-            max = abs(true_values[j][0]-predicted_values[j][0])
-            index = j
-    CieId.append(index)
-    cur.execute("SELECT screenName FROM ProfilesIds WHERE id='"+str(index)+"'")
-    ScreenName = cur.fetchone()[0]
-    CieString.append(ScreenName)
-    ErrorValue.append(max)
-    sup=max
-
-print "TOP 10 ERRORS CIE : "
-print CieString
-print "With Values : "
-print ErrorValue
+    print Values
 
 show()

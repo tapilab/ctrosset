@@ -18,7 +18,7 @@ cur.execute("SELECT * FROM ProfilesIds")
 
 rows = cur.fetchall()
 
-YAge = lil_matrix((numberOfCriterias,9))
+YAge = lil_matrix((numberOfCriterias,6))
 
 for row in rows:
     YAge[row['id'],0] = row['AgeOne']
@@ -27,9 +27,6 @@ for row in rows:
     YAge[row['id'],3] = row['AgeFour']
     YAge[row['id'],4] = row['AgeFive']
     YAge[row['id'],5] = row['AgeSix']
-    YAge[row['id'],6] = row['AgeSeven']
-    YAge[row['id'],7] = row['AgeEight']
-    YAge[row['id'],8] = row['AgeNine']
 	
 f = open('YAge.pkl','wb')
 cPickle.dump(YAge,f,-1)

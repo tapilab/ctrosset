@@ -27,7 +27,7 @@ print "matrix X loaded"
 
 print "Loading Y matrix ..."
 
-f = open('yAge.pkl','rb') # open the file in read binary mode
+f = open('yInc.pkl','rb') # open the file in read binary mode
 # load the data in the .pkl file into a new variable spmat
 Y = cPickle.load(f)
 f.close()
@@ -41,7 +41,7 @@ Yd = Y.todense()
 max = -9999999
 maxAlpha = 0
 
-alphas = [0.0001, 0.001,0.01,0.1,1,5,10,30,50,80,100,1000]
+alphas = [0.001,0.01,0.1,1,5,10,30,50,80,100,1000]
 
 for alpha in alphas:
 

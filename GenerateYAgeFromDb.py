@@ -2,13 +2,8 @@ import sqlite3 as lite
 import sys
 from scipy.sparse import lil_matrix
 import cPickle
-import loadConfig
 
-FILE = ''
-DATABASE = '/Users/cyriltrosset/Desktop/SPECIAL_PROJ_DB/database-50.sqlite'
-APP_KEY = {}
-APP_SECRET = {}
-loadConfig.loadConfig(FILE,DATABASE,APP_KEY,APP_SECRET)
+execfile('loadConfig.py')
 
 con = lite.connect(DATABASE)
     
@@ -23,7 +18,7 @@ cur.execute("SELECT * FROM ProfilesIds")
 
 rows = cur.fetchall()
 
-YAge = lil_matrix((numberOfCriterias,6))
+YAge = lil_matrix((numberOfCriterias,9))
 
 for row in rows:
     YAge[row['id'],0] = row['AgeOne']
@@ -32,6 +27,9 @@ for row in rows:
     YAge[row['id'],3] = row['AgeFour']
     YAge[row['id'],4] = row['AgeFive']
     YAge[row['id'],5] = row['AgeSix']
+    YAge[row['id'],6] = row['AgeSeven']
+    YAge[row['id'],7] = row['AgeEight']
+    YAge[row['id'],8] = row['AgeNine']
 	
 f = open('YAge.pkl','wb')
 cPickle.dump(YAge,f,-1)

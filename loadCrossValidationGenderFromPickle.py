@@ -12,6 +12,7 @@ from sklearn.cross_validation import KFold
 import matplotlib.pyplot as plt
 from pylab import *
 import scipy.stats as scistat
+from twython import Twython, TwythonError, TwythonAuthError, TwythonRateLimitError
 
 execfile('loadConfig.py')
 
@@ -32,22 +33,22 @@ f = open('yMaleFemale.pkl','rb') # open the file in read binary mode
 Y = cPickle.load(f)
 f.close()
 	
-print "Y matrix loaded"
+print "Y matrix loaded\n"
 
 
 Xd = X.todense()
 Yd = Y.todense()
 
-clf = Ridge(alpha=0.01)
-cv = cross_validation.KFold(len(Yd), n_folds=6, random_state=1234)
+clf = Ridge(alpha=0.001)
+cv = cross_validation.KFold(len(Yd), n_folds=10, random_state=1234)
 
 predicted_values = []
 true_values = []
 indices = []
 
 for train, test in cv:
-	print 'train indices:', train
-	print 'test indices:', test
+	#print 'train indices:', train
+	#print 'test indices:', test
 	clf.fit(Xd[train], Yd[train])
 	preds = clf.predict(Xd[test])	
 	predicted_values.extend(preds)
@@ -83,9 +84,18 @@ f = open('friendsMatrix.pkl','rb') # open the file in read binary mode
 friends = cPickle.load(f)
 f.close()
 
+twitter = Twython(APP_KEY[0], APP_SECRET[0], oauth_version=2)
+ACCESS_TOKEN = twitter.obtain_access_token()
+
+
+twitter = Twython(APP_KEY[0], access_token=ACCESS_TOKEN)
+
+print "\n"
+
 for k in range(0,clf.coef_.shape[0]):
     Weights = []
     Values = []
+    Strings = []
     sup = 99999999
     for i in range(0,10):
         max = 0
@@ -96,11 +106,19 @@ for k in range(0,clf.coef_.shape[0]):
                 index = j
         Weights.append(friends[index,0])
         Values.append(max)
+        try:
+            user = twitter.show_user(user_id = int(friends[index,0]))
+        except TwythonRateLimitError:
+            print "API Limit reached"
+        Strings.append(user['screen_name'])
         sup = max
     print "Column " + str(k) + " TOP 10 twitter IDs : "
-    print Weights
+    print Strings
+    print Values
 
 #PRINT TOP 10 ERRORS
+
+print "\n"
 
 con = lite.connect(DATABASE)
 
@@ -130,5 +148,18 @@ print "TOP 10 ERRORS CIE : "
 print CieString
 print "With Values : "
 print ErrorValue
+
+#Compute MSE For each columns
+
+print "\n"
+
+for k in range(0,len(predicted_values[0])):
+    sum = 0
+    for i in range(0,len(predicted_values)):
+        sum += (predicted_values[i][k]-true_values[i][k])*(predicted_values[i][k]-true_values[i][k])
+    result = (1/float(len(predicted_values)))*sum
+    print "Column " +str(k)+" MSE : "
+    print result
+
 
 show()

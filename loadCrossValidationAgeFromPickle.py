@@ -1,4 +1,3 @@
-import loadConfig
 import sqlite3 as lite
 import sys
 from scipy.sparse import lil_matrix
@@ -13,14 +12,9 @@ from sklearn.cross_validation import KFold
 import matplotlib.pyplot as plt
 from pylab import *
 import scipy.stats as scistat
+from twython import Twython, TwythonError, TwythonAuthError, TwythonRateLimitError
 
-FILE = ''
-DATABASE = '/Users/cyriltrosset/Desktop/SPECIAL_PROJ_DB/database-50.sqlite'
-
-APP_KEY = {}
-APP_SECRET = {}
-
-loadConfig.loadConfig(FILE,DATABASE,APP_KEY,APP_SECRET)
+execfile('loadConfig.py')
 
 
 print "Loading matrix X ..."
@@ -39,13 +33,13 @@ f = open('yAge.pkl','rb') # open the file in read binary mode
 Y = cPickle.load(f)
 f.close()
 	
-print "Y matrix loaded"
+print "Y matrix loaded\n"
 
 
 Xd = X.todense()
 Yd = Y.todense()
 
-clf = Ridge(alpha=1)
+clf = Ridge(alpha=0.001)
 cv = cross_validation.KFold(len(Yd), n_folds=10, random_state=1234)
 
 predicted_values = []
@@ -64,13 +58,13 @@ for train, test in cv:
 
 #PLOT PREDICTED VS "TRUE"
 
-mpl.axes.set_default_color_cycle(['r', 'g', 'b', 'c','m','y'])
+mpl.axes.set_default_color_cycle(['r', 'g', 'b', 'c','m','y','k','#ff3ed8','#ffd83e'])
 p1 = plot(predicted_values,true_values,'.')
 p2 = plot(range(0,100),range(0,100),'r',color='black')
 xlabel('% Predicted')
 ylabel('% True')
 title('True vs Predicted')
-legend(p1,['18-24','25-34','35-44','45-54','55-64','65+'])
+legend(p1,['0-16','17-19','20-24','25-29','30-34','35-39','40-49','50-59','60+'])
 
 #Columns corr
 
@@ -92,9 +86,18 @@ f = open('friendsMatrix.pkl','rb') # open the file in read binary mode
 friends = cPickle.load(f)
 f.close()
 
+twitter = Twython(APP_KEY[2], APP_SECRET[2], oauth_version=2)
+ACCESS_TOKEN = twitter.obtain_access_token()
+
+
+twitter = Twython(APP_KEY[2], access_token=ACCESS_TOKEN)
+
+print "\n"
+
 for k in range(0,clf.coef_.shape[0]):
     Weights = []
     Values = []
+    Strings = []
     sup = 99999999
     for i in range(0,10):
         max = 0
@@ -105,8 +108,60 @@ for k in range(0,clf.coef_.shape[0]):
                 index = j
         Weights.append(friends[index,0])
         Values.append(max)
+        try:
+            user = twitter.show_user(user_id = int(friends[index,0]))
+        except TwythonRateLimitError:
+            print "API Limit reached"
+        Strings.append(user['screen_name'])
         sup = max
+        print("@" + user['screen_name'] + "\t" + str(max))
     print "Column " + str(k) + " TOP 10 twitter IDs : "
-    print Weights
+    print Strings
+    print Values
+
+#PRINT TOP 10 ERRORS
+
+print "\n"
+
+con = lite.connect(DATABASE)
+
+con.row_factory = lite.Row
+
+cur = con.cursor()
+
+CieId = []
+CieString = []
+ErrorValue = []
+sup = 99999999
+for i in range(0,10):
+    max = 0
+    index = 0
+    for j in range(0,len(true_values)):
+        if(abs(true_values[j][0]-predicted_values[j][0])>max and abs(true_values[j][0]-predicted_values[j][0])<sup):
+            max = abs(true_values[j][0]-predicted_values[j][0])
+            index = j
+    CieId.append(index)
+    cur.execute("SELECT screenName FROM ProfilesIds WHERE id='"+str(index)+"'")
+    ScreenName = cur.fetchone()[0]
+    CieString.append(ScreenName)
+    ErrorValue.append(max)
+    sup=max
+
+print "TOP 10 ERRORS CIE : "
+print CieString
+print "With Values : "
+print ErrorValue
+
+#Compute MSE For each columns
+
+print "\n"
+
+for k in range(0,len(predicted_values[0])):
+    sum = 0
+    for i in range(0,len(predicted_values)):
+        sum += (predicted_values[i][k]-true_values[i][k])*(predicted_values[i][k]-true_values[i][k])
+    result = (1/float(len(predicted_values)))*sum
+    print "Column " +str(k)+" MSE : "
+    print result
 
 show()
