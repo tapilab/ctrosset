@@ -1,7 +1,13 @@
-1 - Fill foobar.config file
+1 - Install needed libraries
+----
+	twython
+	sqlite3
+	scikit-learn
+
+2 - Fill foobar.config file
 ----
 
-2 - Create the database schema 
+3 - Create the database schema 
 ----
 (ignore next database commands if you do so)
 
@@ -19,7 +25,7 @@
 
 
 
-3 - Fetch followers of twitter account.
+4 - Fetch followers of twitter account.
 ---
 **a - Database Table :**
 	
@@ -39,7 +45,7 @@ Ex :
 Repeat the script until ToFetch.txt is empty
 		
 
-4 - Fetch followers's friends
+5 - Fetch followers's friends
 ---
 **a - Database Table**
 	
@@ -51,7 +57,7 @@ Repeat the script until ToFetch.txt is empty
 	
 Repeat the script until all followers have been treated. (Schedule a cron task every 16 minutes)
 		
-5 - Create the Friends dictionary table
+6 - Create the Friends dictionary table
 ---
 **a - Database table**
 
@@ -60,7 +66,7 @@ Repeat the script until all followers have been treated. (Schedule a cron task e
 
 **b - Launch the script : buildFriendsTable.py**
 
-6 - Generate the Matrix table
+7 - Generate the Matrix table
 ---
 **a - Database Table**
 
@@ -69,7 +75,7 @@ Repeat the script until all followers have been treated. (Schedule a cron task e
 
 **b - Launch the script : buildMatrixFromRawDatas.py**
 	
-7 - Create the Profiles dictionary table
+8 - Create the Profiles dictionary table
 ---
 **a - Database Table**
 	
@@ -78,12 +84,12 @@ Repeat the script until all followers have been treated. (Schedule a cron task e
 
 **b - Launch script : buildProfilesTable.py**
 	
-8 - Fill screenName in Profiles dictionary table
+9 - Fill screenName in Profiles dictionary table
 ---
 **a - Launch script : fillProfilesScreenName.py**
 	
 
-9 - Filter the datas
+10 - Filter the datas
 ---	
 **a - Remove profilesIDs from Friends and Matrix**
 	
@@ -93,12 +99,12 @@ Launch the script : filterDatabaseBfromA.py
 	
 Launch the script : filterMatrixDBMinAppear.py
 		
-10 - Shift dictionaries IDs
+11 - Shift dictionaries IDs
 ---
 
 **a - Launch the script : shiftDatabaseFriends.py**
 	
-11 - Load gender demographics into DB
+12 - Load gender demographics into DB
 ---
 **a - Create a file cie.txt with twitter screen name**
 	
@@ -118,7 +124,7 @@ Example :
 
 **c - Launch the script : loadGenderDemographicsIntoDb.py**
 	
-12 - Generate Matrices pickle
+13 - Generate Matrices pickle
 ---
 **a - Launch the script : GenerateXFromDB.py**
 	
@@ -127,7 +133,7 @@ Example :
 **c - Launch the script : GenerateFriendsDicFromDb.py**
 	
 
-13 - Compute cross-validation
+14 - Compute cross-validation
 ---
 **a - Launch the script : loadCrossValidationGenderFromPickle.py**
 	
